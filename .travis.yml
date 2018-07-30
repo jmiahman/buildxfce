@@ -16,6 +16,7 @@ before_install:
 env:
 - TASK_FULL="task-korora-xfce-live-x86_64"
 script:
+- apt-get install tree -y
 - TASK_RPM=$(echo $TASK_FULL | cut -d- -f1-4)
 - TASK_NAME=$(echo $TASK_FULL | cut -d- -f3-5)
 - ARCH=$(echo $TASK_FULL | cut -d- -f5)
@@ -35,9 +36,9 @@ script:
 - docker exec -d $CID /bin/sh -c 'cd ./kp;./kp release --release-version 28 --desktop XFCE korora-xfce |& tee -a /rpmbuild/iso_build.log'
 - docker exec $CID /bin/sh -c 'while ps ax | grep kp | grep -v grep > /dev/null ; do sleep 60 ; export x="$(($x+1))" ; echo "--==|kp release has been running for $x minute(s)|==--" ; done'
 - docker exec $CID /bin/sh -c 'rpm -qa &> /rpmbuild/rpm.list'
-- export LIVE_ISO=$(find / -name "*.iso*" -print)
-- pwd
-- ls -la
+- export LIVE_ISO=$(find /home/travis -name "*.iso*" -print)
+- tree /home/travis
+- tree /rpmbuild
 - echo ${LIVE_ISO}
 - export RPM_LIST=$(readlink -f ./rpm.list)
 - mv $LIVE_ISO ./$TASK_NAME/${TASK_NAME}-$(date +%Y%m%d%H).iso
