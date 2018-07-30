@@ -16,7 +16,7 @@ before_install:
 env:
 - TASK_FULL="task-korora-xfce-live-x86_64"
 script:
-- apt-get install tree -y
+- sudo apt-get install tree -y
 - TASK_RPM=$(echo $TASK_FULL | cut -d- -f1-4)
 - TASK_NAME=$(echo $TASK_FULL | cut -d- -f3-5)
 - ARCH=$(echo $TASK_FULL | cut -d- -f5)
