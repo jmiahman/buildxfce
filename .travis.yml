@@ -25,9 +25,9 @@ script:
 - docker run --hostname=Korora --privileged=true -d -v "$(pwd):/rpmbuild" -v "/dev:/dev" -v "/sys/fs/cgroup:/sys/fs/cgroup:ro" $DID tail -f /dev/null
 - export CID=$(docker ps -l | awk '{print $1}' | grep -v -m1 'CONTAINER')
 - echo $CID
-- git clone https://gitlab.com/korora/kp.git
-- docker exec $CID /bin/sh -c 'cd ./kp;cp kp.conf.example kp.conf;./kp init &>> /rpmbuild/iso_build.log'
 - docker exec $CID /bin/sh -c 'dnf update --setopt=install_weak_deps=False -y &>> /rpmbuild/iso_build.log'
+- docker exec $CID /bin/sh -c 'dnf install git pykickstart livecd-tools mock rsync file tar tree -y &>> /rpmbuild/iso_build.log'
+- docker exec $CID /bin/sh -c 'git clone https://gitlab.com/korora/kp.git && cd ./kp && cp kp.conf.example kp.conf && ./kp init &>> /rpmbuild/iso_build.log'
 - docker exec $CID /bin/sh -c 'sed -i "1050i\        time.sleep(60)" /usr/lib/python3.6/site-packages/imgcreate/fs.py  &>> /rpmbuild/iso_build.log'
 - mkdir -p ${TASK_NAME}
 - export LIVE_LOG=$(readlink -f ./*.log)
