@@ -31,11 +31,11 @@ script:
 - docker exec $CID /bin/sh -c 'sed -i "1050i\        time.sleep(60)" /usr/lib/python3.6/site-packages/imgcreate/fs.py  &>> /rpmbuild/iso_build.log'
 - mkdir -p ${TASK_NAME}
 - export LIVE_LOG=$(readlink -f ./*.log)
-- if [ "$TRAVIS_TEST_RESULT" == "1" ]; then mv $LIVE_LOG ./${TASK_NAME}/FAILED_BUILD.log && rsync -arz --progress --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./${TASK_NAME} foobar2:public_html/pub/isos/; travis restart "$TRAVIS_JOB_NUMBER" -r unity-linux/buildunity; exit 1; fi
-- docker exec -d $CID /bin/sh -c 'cd ./kp;./kp release --release-version 28 --desktop XFCE korora-xfce &>> /rpmbuild/iso_build.log'
-- docker exec $CID /bin/sh -c 'while ps ax | grep kp | grep -v grep > /dev/null ; do sleep 60 ; export x="$(($x+1))" ; echo "--==|mklivecd has been running for $x minute(s)|==--" ; done'
+- if [ "$TRAVIS_TEST_RESULT" == "1" ]; then mv $LIVE_LOG ./${TASK_NAME}/FAILED_BUILD.log && rsync -arz --progress --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./${TASK_NAME} foobar2:public_html/pub/korora/iso/; travis restart "$TRAVIS_JOB_NUMBER" -r jmiahman/buildxfce; exit 1; fi
+- docker exec -d $CID /bin/sh -c 'cd ./kp;./kp release --release-version 28 --desktop XFCE korora-xfce |& tee -a /rpmbuild/iso_build.log'
+- docker exec $CID /bin/sh -c 'while ps ax | grep kp | grep -v grep > /dev/null ; do sleep 60 ; export x="$(($x+1))" ; echo "--==|kp release has been running for $x minute(s)|==--" ; done'
 - docker exec $CID /bin/sh -c 'rpm -qa &> /rpmbuild/rpm.list'
-- export LIVE_ISO=$(readlink -f ./*.iso)
+- export LIVE_ISO=$(find ./ -name "*.iso*" -print)
 - export RPM_LIST=$(readlink -f ./rpm.list)
 - mv $LIVE_ISO ./$TASK_NAME/${TASK_NAME}-$(date +%Y%m%d%H).iso
 - mv $LIVE_LOG ./$TASK_NAME/${TASK_NAME}-$(date +%Y%m%d%H).log
