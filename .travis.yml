@@ -16,17 +16,15 @@ before_install:
 env:
 - TASK_FULL="task-korora-xfce-live-x86_64"
 script:
-- sudo apt-get install tree -y
-- TASK_RPM=$(echo $TASK_FULL | cut -d- -f1-4)
-- TASK_NAME=$(echo $TASK_FULL | cut -d- -f3-5)
+- TASK_NAME=$(echo $TASK_FULL | cut -d- -f2-5)
 - ARCH=$(echo $TASK_FULL | cut -d- -f5)
 - docker pull fedora:28
 - export DID=$(docker images -a | grep -m1 fedora | awk '{print $3}')
 - echo $DID
-- docker run --hostname=Korora --privileged=true -d -v "$(pwd):/rpmbuild" -v "/dev:/dev" -v "/sys/fs/cgroup:/sys/fs/cgroup:ro" $DID tail -f /dev/null
+- docker run --privileged=true -d -v "$(pwd):/rpmbuild" -v "/dev:/dev" -v "/sys/fs/cgroup:/sys/fs/cgroup:ro" $DID tail -f /dev/null
 - export CID=$(docker ps -l | awk '{print $1}' | grep -v -m1 'CONTAINER')
 - echo $CID
-- docker exec $CID /bin/sh -c 'dnf update --setopt=install_weak_deps=False -y &>> /rpmbuild/iso_build.log'
+- docker exec $CID /bin/sh -c 'dnf update -y &>> /rpmbuild/iso_build.log'
 - docker exec $CID /bin/sh -c 'dnf install git pykickstart livecd-tools mock rsync file tar tree -y &>> /rpmbuild/iso_build.log'
 - docker exec $CID /bin/sh -c 'cd /rpmbuild;git clone https://gitlab.com/korora/kp.git && cd ./kp && cp kp.conf.example kp.conf && ./kp init &>> /rpmbuild/iso_build.log'
 - docker exec $CID /bin/sh -c 'sed -i "1050i\        time.sleep(60)" /usr/lib/python3.6/site-packages/imgcreate/fs.py  &>> /rpmbuild/iso_build.log'
