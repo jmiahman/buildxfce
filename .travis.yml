@@ -14,18 +14,17 @@ before_install:
 - gem install travis
 - echo "y" | sh /tmp/stuff/.travis_login
 env:
-- TASK_FULL="task-korora-xfce-live-x86_64"
+- TASK_FULL="task-korora-live-xfce-x86_64"
 script:
 - TASK_NAME=$(echo $TASK_FULL | cut -d- -f2-5)
 - ARCH=$(echo $TASK_FULL | cut -d- -f5)
-- docker pull fedora:28
+- docker pull registry.hub.docker.com/library/fedora:28
 - export DID=$(docker images -a | grep -m1 fedora | awk '{print $3}')
 - echo $DID
 - docker run --privileged=true -t -d -v "$(pwd):/rpmbuild" -v "/dev:/dev" -v "/sys/fs/cgroup:/sys/fs/cgroup:ro" $DID /usr/bin/bash 
 - export CID=$(docker ps -l | awk '{print $1}' | grep -v -m1 'CONTAINER')
 - echo $CID
-- docker exec $CID /bin/sh -c 'dnf update -y &>> /rpmbuild/iso_build.log'
-- docker exec $CID /bin/sh -c 'dnf install git pykickstart livecd-tools mock rsync file tar tree -y &>> /rpmbuild/iso_build.log'
+- docker exec $CID /bin/sh -c 'dnf install git openssl openssh-clients pykickstart livecd-tools mock rsync file tar tree -y &>> /rpmbuild/iso_build.log'
 - docker exec $CID /bin/sh -c 'cd /rpmbuild;git clone https://gitlab.com/korora/kp.git && cd ./kp && cp kp.conf.example kp.conf && ./kp init &>> /rpmbuild/iso_build.log'
 - docker exec $CID /bin/sh -c 'sed -i "1050i\        time.sleep(60)" /usr/lib/python3.6/site-packages/imgcreate/fs.py  &>> /rpmbuild/iso_build.log'
 - mkdir -p ${TASK_NAME}
