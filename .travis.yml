@@ -46,5 +46,6 @@ script:
 - if [ "$TRAVIS_TEST_RESULT" == "1" ]; then rsync -arz --progress --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./$TASK_NAME foobar2:public_html/pub/korora/iso/testing/28/; fi
 after_success:
 - rsync -arz --progress --delete --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./$TASK_NAME foobar2:public_html/pub/korora/iso/testing/28/unstable/ &
+wait
 #- rsync -arz --progress --delete --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./$TASK_NAME foobar:/var/www/html/isos/ &
 #- wait %1 %2
