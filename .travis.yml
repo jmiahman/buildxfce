@@ -16,7 +16,6 @@ before_install:
 env:
 - TASK_FULL="task-korora-live-xfce-x86_64"
 script:
-- sudo setenforce 0
 - TASK_NAME=$(echo $TASK_FULL | cut -d- -f2-5)
 - ARCH=$(echo $TASK_FULL | cut -d- -f5)
 - docker pull registry.hub.docker.com/library/fedora:28
