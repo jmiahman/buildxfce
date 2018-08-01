@@ -45,6 +45,6 @@ script:
 - md5sum "$NEW_ISO" > ./$TASK_NAME/$(basename "$NEW_ISO").md5
 - if [ "$TRAVIS_TEST_RESULT" == "1" ]; then rsync -arz --progress --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./$TASK_NAME foobar2:public_html/pub/korora/iso/testing/28/; fi
 after_success:
-- rsync -arz --progress --delete --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./$TASK_NAME foobar2:public_html/pub/korora/iso/testing/28/ &
-- rsync -arz --progress --delete --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./$TASK_NAME foobar:/var/www/html/isos/ &
-- wait %1 %2
+- rsync -arz --progress --delete --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./$TASK_NAME foobar2:public_html/pub/korora/iso/testing/28/unstable/ &
+#- rsync -arz --progress --delete --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./$TASK_NAME foobar:/var/www/html/isos/ &
+#- wait %1 %2
