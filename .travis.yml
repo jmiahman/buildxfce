@@ -21,7 +21,7 @@ script:
 - docker pull registry.hub.docker.com/library/fedora:28
 - export DID=$(docker images -a | grep -m1 fedora | awk '{print $3}')
 - echo $DID
-- docker run --privileged=true -t -d -v "$(pwd):/rpmbuild" -v "/dev:/dev" -v "/cache" $DID /usr/bin/bash 
+- docker run --privileged -d -ti -v "$(pwd):/rpmbuild" -v "/dev:/dev" -v /sys/fs/cgroup:/sys/fs/cgroup -v "/cache" $DID /usr/sbin/init 
 - export CID=$(docker ps -l | awk '{print $1}' | grep -v -m1 'CONTAINER')
 - echo $CID
 - docker exec $CID /bin/sh -c 'dnf install git openssl openssh-clients pykickstart livecd-tools mock rsync file tar tree -y &>> /rpmbuild/iso_build.log'
