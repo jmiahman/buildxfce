@@ -28,7 +28,7 @@ script:
 - docker exec $CID /bin/sh -c 'sed -i "1050i\        time.sleep(60)" /usr/lib/python3.6/site-packages/imgcreate/fs.py  &>> /rpmbuild/iso_build.log'
 - mkdir -p ${TASK_NAME}
 - export LIVE_LOG=$(readlink -f ./*.log)
-- if [ "$TRAVIS_TEST_RESULT" == "1" ]; then mv $LIVE_LOG ./${TASK_NAME}/FAILED_BUILD.log && rsync -arz --progress --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./${TASK_NAME} foobar2:public_html/pub/korora/iso/testing/28/; travis restart "$TRAVIS_JOB_NUMBER" -r jmiahman/buildxfce; exit 1; fi
+- if [ "$TRAVIS_TEST_RESULT" == "1" ]; then mv $LIVE_LOG ./${TASK_NAME}/FAILED_BUILD.log && rsync -arz --progress --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./${TASK_NAME} foobar2:public_html/pub/korora/iso/testing/28/unstable/; travis restart "$TRAVIS_JOB_NUMBER" -r jmiahman/buildxfce; exit 1; fi
 - docker exec -d $CID /bin/sh -c 'cd /rpmbuild/kp;./kp release --release-version 28 --desktop XFCE korora-xfce |& tee -a /rpmbuild/iso_build.log'
 - docker exec $CID /bin/sh -c 'while ps ax | grep kp | grep -v grep > /dev/null ; do sleep 60 ; export x="$(($x+1))" ; echo "--==|kp release has been running for $x minute(s)|==--" ; done'
 - docker exec $CID /bin/sh -c 'rpm -qa &> /rpmbuild/rpm.list'
@@ -41,7 +41,7 @@ script:
 - export NEW_ISO=$(readlink -f ./$TASK_NAME/*.iso)
 - echo "$NEW_ISO"
 - md5sum "$NEW_ISO" > ./$TASK_NAME/$(basename "$NEW_ISO").md5
-- if [ "$TRAVIS_TEST_RESULT" == "1" ]; then rsync -arz --progress --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./$TASK_NAME foobar2:public_html/pub/korora/iso/testing/28/; fi
+- if [ "$TRAVIS_TEST_RESULT" == "1" ]; then rsync -arz --progress --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./$TASK_NAME foobar2:public_html/pub/korora/iso/testing/28/unstable/; fi
 after_success:
 - rsync -arz --progress --delete --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./$TASK_NAME foobar2:public_html/pub/korora/iso/testing/28/unstable/ &
 - wait
