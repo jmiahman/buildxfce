@@ -29,16 +29,15 @@ script:
 - mkdir -p ${TASK_NAME}
 - export LIVE_LOG=$(readlink -f ./*.log)
 - if [ "$TRAVIS_TEST_RESULT" == "1" ]; then mv $LIVE_LOG ./${TASK_NAME}/FAILED_BUILD.log && rsync -arz --progress --rsh=ssh -e "ssh -o StrictHostKeyChecking=no" ./${TASK_NAME} foobar2:public_html/pub/korora/iso/testing/28/; travis restart "$TRAVIS_JOB_NUMBER" -r jmiahman/buildxfce; exit 1; fi
-- docker exec $CID /bin/sh -c '/sbin/fixfiles -f -F relabel  &>> /rpmbuild/iso_build.log'
 - docker exec -d $CID /bin/sh -c 'cd /rpmbuild/kp;./kp release --release-version 28 --desktop XFCE korora-xfce |& tee -a /rpmbuild/iso_build.log'
 - docker exec $CID /bin/sh -c 'while ps ax | grep kp | grep -v grep > /dev/null ; do sleep 60 ; export x="$(($x+1))" ; echo "--==|kp release has been running for $x minute(s)|==--" ; done'
 - docker exec $CID /bin/sh -c 'rpm -qa &> /rpmbuild/rpm.list'
 - export LIVE_ISO=$(find /home/travis/build/ -name "*.iso*" -print)
 - echo ${LIVE_ISO}
 - export RPM_LIST=$(readlink -f ./rpm.list)
-- cp $LIVE_ISO ./$TASK_NAME/${TASK_NAME}-$(date +%Y%m%d%H).iso
-- mv $LIVE_LOG ./$TASK_NAME/${TASK_NAME}-$(date +%Y%m%d%H).log
-- mv $RPM_LIST ./$TASK_NAME/${TASK_NAME}-$(date +%Y%m%d%H).rpmlist
+- cp $LIVE_ISO ./$TASK_NAME/${TASK_NAME}-$(date +%Y%m%d%H)-travis.iso
+- mv $LIVE_LOG ./$TASK_NAME/${TASK_NAME}-$(date +%Y%m%d%H)-travis.log
+- mv $RPM_LIST ./$TASK_NAME/${TASK_NAME}-$(date +%Y%m%d%H)-travis.rpmlist
 - export NEW_ISO=$(readlink -f ./$TASK_NAME/*.iso)
 - echo "$NEW_ISO"
 - md5sum "$NEW_ISO" > ./$TASK_NAME/$(basename "$NEW_ISO").md5
