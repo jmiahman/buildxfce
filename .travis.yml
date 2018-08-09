@@ -18,7 +18,7 @@ env:
 script:
 - TASK_NAME=$(echo $TASK_FULL | cut -d- -f2-5)
 - ARCH=$(echo $TASK_FULL | cut -d- -f5)
-- docker run --privileged -v "${PWD}:/rpmbuild:rw" -v "/dev:/dev" -v /sys/fs/cgroup:/sys/fs/cgroup -d fedora:28 /usr/sbin/init
+- docker run --privileged -e "container=docker" -v "${PWD}:/rpmbuild:rw" -v "/dev:/dev" -v /sys/fs/cgroup:/sys/fs/cgroup -dt fedora:28 /usr/sbin/init
 - export DID=$(docker images -a | grep -m1 fedora | awk '{print $3}')
 - echo $DID
 - export CID=$(docker ps -l | awk '{print $1}' | grep -v -m1 'CONTAINER')
