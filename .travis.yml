@@ -16,6 +16,7 @@ before_install:
 env:
 - TASK_FULL="task-korora-live-xfce-x86_64"
 script:
+- echo 'DOCKER_OPTS="--selinux-enabled -H tcp://127.0.0.1:2375 -H unix:///var/run/docker.sock -s devicemapper"' | sudo tee /etc/default/docker > /dev/null
 - TASK_NAME=$(echo $TASK_FULL | cut -d- -f2-5)
 - ARCH=$(echo $TASK_FULL | cut -d- -f5)
 - docker run -v "${PWD}:/rpmbuild:rw" -v "/dev:/dev" -v /sys/fs/cgroup:/sys/fs/cgroup -dt fedora:28 /usr/sbin/init
